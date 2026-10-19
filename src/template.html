@@ -1,0 +1,569 @@
+<title>Ola, dónde estás?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=Josefin+Sans:wght@300;400;600&family=Fraunces:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+<style>
+/* Una columna para el celular. Paleta: celeste y arena, fondo liso.
+   Inicio = La ola hoy. Explorar = Ver otras playas. Detalle = una playa con Hoy y Mañana. */
+:root {
+  --bg: #CFEAEE;
+  --surface: rgba(255, 255, 255, 0.74);
+  --surface-solid: #F4FAFA;
+  --panel: rgba(250, 248, 242, 0.8);
+  --ink: #123B4F;
+  --ink-soft: #476D7E;
+  --line: rgba(18, 59, 79, 0.14);
+  --sky: #4FB3D1;
+  --sky-soft: #C9E6EE;
+  --sand: #F1E5C6;
+  --sand-deep: #B8975A;
+  --glass: #2DB8AE;
+  --calm: #6DB7D3;
+  --wind: #C9A96A;
+  --mov: #D2B26B;
+  --blow: #9A8F86;
+  --font-display: 'Josefin Sans', 'Avenir Next', 'Segoe UI', sans-serif;
+  --font-body: 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+/* La app siempre usa colores claros, sin importar el modo del celular */
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.45; padding-inline: 20px; padding-block: 24px 120px; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.ic { flex: none; display: block; }
+
+.sea { position: fixed; inset: 0; z-index: 0; background-image: linear-gradient(180deg, #BFE3EC 0%, #D9EEEE 45%, #EFEBDD 78%, #EBDBB4 100%); }
+
+main { position: relative; z-index: 1; max-width: 480px; margin-inline: auto; display: flex; flex-direction: column; gap: 22px; }
+
+/* encabezado: mismo nombre y misma tipografía en todas las pantallas */
+.brand { margin: -24px -20px 0; padding: 30px 20px 8px; background: linear-gradient(180deg, #62A9C8 0%, #7DB9D1 22%, #A0CDDD 48%, #C4E0E6 72%, rgba(222, 234, 232, 0) 100%); }
+.brand h1 { margin: 0; line-height: 1; color: #fff; text-shadow: 0 2px 14px rgba(18, 59, 79, 0.5); }
+.brand h1 b { font: 600 2.1rem/1 'Fraunces', Georgia, serif; }
+.brand h1 i { font: italic 500 1.6rem/1 'Fraunces', Georgia, serif; }
+.brand.big { padding-top: 46px; padding-bottom: 12px; margin-bottom: -22px; }
+.brand.big h1 { display: flex; flex-direction: column; align-items: flex-start; }
+.brand.big h1 b { font-size: 4rem; line-height: 0.95; }
+.brand.big h1 i { font-size: 2.5rem; line-height: 1.1; }
+
+/* interruptor Hoy / Mañana */
+.days { display: inline-flex; gap: 2px; background: rgba(79, 179, 209, 0.18); border-radius: 12px; padding: 3px; }
+.days button { border: 0; background: transparent; padding: 6px 14px; border-radius: 9px; font-weight: 600; font-size: 0.85rem; color: var(--ink); }
+.days button[aria-pressed="true"] { background: var(--ink); color: var(--surface-solid); }
+
+.notice { margin: 0; font-size: 0.85rem; color: var(--ink); background: var(--sand); border-radius: 14px; padding: 10px 14px; }
+.eyebrow { font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft); margin: 0; font-weight: 600; }
+.subhead { margin: 0; font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; color: var(--ink-soft); }
+.en { font-weight: 300; color: var(--ink-soft); }
+
+/* etiquetas */
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 600; padding: 6px 12px 6px 9px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-solid); white-space: nowrap; }
+.pill.glass { color: var(--glass); } .pill.prolijo { color: var(--calm); } .pill.movidito { color: var(--sand-deep); } .pill.soplado { color: #7A6F67; }
+.pill span { color: var(--ink); }
+.badge { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; background: var(--glass); color: #04302C; padding: 5px 12px 5px 8px; border-radius: 999px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { display: inline-flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px 8px 10px; font-weight: 600; font-size: 0.9rem; color: var(--ink); }
+.chip-ico { display: grid; place-items: center; }
+
+/* tarjetas */
+.card { background: var(--surface); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--line); border-radius: 26px; padding: 22px 20px; display: flex; flex-direction: column; gap: 14px; overflow: hidden; }
+.card .pill { align-self: flex-start; }
+.card-head { display: flex; align-items: center; gap: 12px; }
+.ico { width: 46px; height: 46px; border-radius: 16px; background: var(--sand); color: var(--ink); display: grid; place-items: center; flex: none; }
+.advice { margin: 0; }
+.stats { display: grid; grid-template-columns: auto auto auto; justify-content: space-between; gap: 12px; }
+.mejor { display: flex; align-items: baseline; justify-content: space-between; background: rgba(79,179,209,0.14); border-radius: 16px; padding: 12px 16px; }
+.mejor span { font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; }
+.mejor b { font-family: var(--font-display); font-weight: 400; font-size: 1.5rem; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.stat { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.stat b { font-family: var(--font-display); font-weight: 400; font-size: 1.1875rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.stat span { font-size: 0.8rem; color: var(--ink-soft); }
+.hint { margin: 0; font-size: 0.85rem; color: var(--ink-soft); }
+
+/* inicio */
+.panel { background: var(--panel); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--line); border-radius: 30px; padding: 14px 14px 8px; display: flex; flex-direction: column; gap: 6px; box-shadow: 0 10px 30px rgba(18, 59, 79, 0.12); }
+.chat { display: flex; flex-direction: column; gap: 14px; }
+.a { position: relative; margin: 0 8px; background: var(--surface-solid); border-radius: 28px; padding: 34px 24px 28px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 8px 28px rgba(18, 59, 79, 0.16); animation: pop 0.35s ease-out; transform-origin: right bottom; }
+.a::before { content: ""; position: absolute; right: -11px; bottom: 46px; width: 26px; height: 26px; background: var(--surface-solid); border-radius: 4px; transform: rotate(45deg); }
+@keyframes pop { from { transform: scale(0.94); } to { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .a { animation: none; } }
+.a h2 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 2.3rem; line-height: 1.1; letter-spacing: 0.01em; text-wrap: balance; color: var(--ink); }
+.a h2.long { font-size: 2rem; line-height: 1.15; }
+.a h2.hoy { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; text-wrap: initial; }
+.a h2.hoy .lead { font-weight: 300; font-size: 2rem; line-height: 1.1; letter-spacing: 0.01em; color: var(--ink-soft); }
+.a h2.hoy .pname { font-weight: 600; font-size: 2.625rem; line-height: 1.05; letter-spacing: 0.005em; text-wrap: balance; position: relative; display: inline-block; }
+.a h2.hoy .pname svg { position: absolute; left: 0; bottom: -10px; width: 100%; height: 10px; }
+.panel .card { overflow: visible; background: transparent; border: 0; backdrop-filter: none; -webkit-backdrop-filter: none; padding: 14px 8px 10px; border-top: 1px dashed var(--line); border-radius: 0; margin-top: 8px; }
+.card.today, .card.teaser { width: 100%; text-align: left; color: var(--ink); font: inherit; }
+.card.today .big { font-family: var(--font-display); font-weight: 400; font-size: 1.875rem; line-height: 1.05; margin: 0; }
+.card.today .tline { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; min-width: 0; }
+.card .more { font-size: 0.85rem; font-weight: 600; color: var(--ink-soft); }
+.card.today .more { align-self: flex-end; }
+.card.today .hournote { margin-bottom: -6px; }
+.also { background: var(--panel); border: 1px solid var(--line); border-radius: 30px; padding: 18px 20px; box-shadow: 0 10px 30px rgba(18, 59, 79, 0.12); display: flex; flex-direction: column; gap: 12px; }
+.also p.msg { margin: 0; }
+
+/* ver otras playas */
+.finder { position: relative; }
+.finder-in { display: flex; align-items: stretch; background: var(--surface-solid); border: 1px solid var(--line); border-radius: 999px; }
+.zonebtn { flex: none; display: flex; align-items: center; gap: 6px; margin: 4px; border: 1px solid rgba(18, 59, 79, 0.32); border-radius: 999px; background: transparent; color: var(--ink); padding: 0 10px 0 14px; font-weight: 600; font-size: 0.9rem; }
+.search { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; padding: 0 14px; color: var(--ink-soft); }
+.search input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: inherit; color: var(--ink); padding: 12px 0; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.zonemenu { position: absolute; left: 0; top: 54px; width: 230px; z-index: 8; background: var(--surface-solid); border: 1px solid var(--line); border-radius: 20px; padding: 6px; box-shadow: 0 14px 34px rgba(18, 59, 79, 0.22); display: flex; flex-direction: column; gap: 2px; }
+.zonemenu button { display: flex; align-items: center; justify-content: space-between; border: 0; background: transparent; border-radius: 14px; padding: 12px 14px; font-weight: 500; font-size: 0.95rem; text-align: left; color: var(--ink); }
+.zonemenu button[aria-checked="true"] { background: var(--sky-soft); font-weight: 600; }
+.listhead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.list { display: flex; flex-direction: column; gap: 10px; padding: 0; margin: 0; list-style: none; }
+.row { width: 100%; text-align: left; background: var(--surface); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid var(--line); border-radius: 22px; padding: 14px; display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: center; }
+.row .ico { width: 48px; height: 48px; }
+.row .txt { display: flex; flex-direction: column; gap: 6px; min-width: 0; align-items: flex-start; }
+.row .name { font-family: var(--font-display); font-weight: 600; font-size: 1.28rem; line-height: 1.15; }
+.row .sizeline, .card-head .sizeline { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.row .size { font-family: var(--font-display); font-size: 1.1rem; }
+.row .mejor { display: inline-flex; gap: 10px; border-radius: 12px; padding: 6px 12px; }
+.row .mejor span { font-size: 0.6875rem; }
+.row .mejor b { font-size: 1.0625rem; }
+.hint b { color: var(--ink); font-weight: 600; }
+.offbox { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 14px; }
+.offbox .subhead { margin-bottom: 10px; }
+
+/* detalle */
+.beachname { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 1.75rem; line-height: 1.15; }
+.card.days { gap: 22px; }
+.daysec { display: flex; flex-direction: column; gap: 14px; }
+.daysec + .daysec { border-top: 1px dashed var(--line); padding-top: 22px; }
+.card.days .card-head { gap: 14px; }
+.card.days .ico { width: 52px; height: 52px; border-radius: 18px; }
+.card.days .size2 { font-family: var(--font-display); font-size: 1.6rem; line-height: 1.1; }
+.card.days .ch-txt { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.bars { display: flex; align-items: flex-end; gap: 4px; height: 72px; }
+.bars { margin-top: 30px; }
+.bar { position: relative; flex: 1; min-width: 0; border-radius: 6px 6px 3px 3px; background: var(--calm); }
+.bar.glass { background: var(--glass); } .bar.prolijo { background: var(--calm); } .bar.movidito { background: var(--mov); } .bar.soplado { background: var(--blow); }
+.bar.now { outline: 2px solid var(--ink); outline-offset: 1px; }
+.bar .blabel { position: absolute; left: 50%; transform: translateX(-50%); font-size: 0.72rem; font-weight: 600; color: var(--ink); white-space: nowrap; bottom: calc(100% + 4px); }
+.bar.now .blabel { color: #fff; background: var(--ink); border-radius: 9px; padding: 3px 8px; bottom: calc(100% + 9px); }
+.chart { display: flex; flex-direction: column; gap: 12px; }
+.chart h4 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 1.0625rem; color: var(--ink); }
+.chart .sub { margin: 2px 0 0; font-size: 0.85rem; color: var(--ink-soft); }
+.ticks { border-top: 1px solid var(--line); padding-top: 4px; }
+.qchips { display: flex; justify-content: space-between; gap: 6px; }
+.qchips span { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8125rem; font-weight: 500; color: var(--ink); }
+.qchips i { flex: none; width: 11px; height: 11px; border-radius: 50%; }
+.ticks { display: flex; gap: 4px; margin-top: 6px; }
+.ticks span { flex: 1; min-width: 0; font-size: 0.7rem; color: var(--ink-soft); text-align: center; font-variant-numeric: tabular-nums; }
+.qlegend { display: flex; flex-direction: column; gap: 8px; }
+.qlegend div { display: flex; align-items: baseline; gap: 10px; font-size: 0.875rem; line-height: 1.4; color: var(--ink-soft); }
+.qlegend i { flex: none; width: 10px; height: 10px; border-radius: 50%; transform: translateY(1px); }
+.qlegend b { color: var(--ink); font-weight: 600; }
+.backbtn { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; background: var(--surface-solid); border: 1px solid var(--line); border-radius: 999px; padding: 10px 20px 10px 14px; color: var(--ink); font-weight: 600; font-size: 0.95rem; box-shadow: 0 4px 14px rgba(18, 59, 79, 0.14); }
+
+
+/* tu ola: chip del encabezado */
+.brand.big.hasChip { padding-bottom: 22px; }
+.brand.big .tuola { margin-top: 12px; display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.55); border: 1px solid rgba(255, 255, 255, 0.85); border-radius: 999px; padding: 5px 8px 5px 9px; font-weight: 600; font-size: 0.8rem; color: var(--ink); }
+.brand.big .tuola .soft { font-weight: 400; color: var(--ink-soft); }
+.brand.big .tuola .ic:last-child { opacity: 0.7; }
+
+/* ubicación y aviso */
+.a { align-items: flex-end; text-align: right; }
+.a .place { align-self: flex-end; margin: 0; background: none; border: 0; padding: 2px 4px; font-weight: 500; font-size: 0.9rem; color: var(--ink-soft); }
+.dist { margin: 6px 10px 0; display: flex; align-items: center; gap: 6px; font-size: 0.9rem; font-weight: 500; color: var(--ink-soft); }
+.nomatch { display: flex; align-items: center; gap: 12px; background: #1F5F86; color: #fff; border-radius: 20px; padding: 14px 16px; box-shadow: 0 8px 22px rgba(31, 95, 134, 0.32); font-size: 0.94rem; line-height: 1.3; }
+.nomatch b { font-weight: 600; }
+.nm-ico { flex: none; width: 36px; height: 36px; border-radius: 12px; background: rgba(255, 255, 255, 0.18); display: grid; place-items: center; }
+
+/* elegir tu ola */
+.pick { background: var(--panel); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--line); border-radius: 30px; padding: 22px 16px 16px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 10px 30px rgba(18, 59, 79, 0.12); }
+.pick-head { display: flex; flex-direction: column; gap: 8px; padding: 0 4px; }
+.pick-head h2 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 2rem; line-height: 1.1; letter-spacing: 0.01em; }
+.pick-head p { margin: 0; font-size: 1rem; line-height: 1.4; color: var(--ink-soft); }
+.opts { display: flex; flex-direction: column; gap: 10px; }
+.opt { width: 100%; text-align: left; display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 14px; }
+.opt .ico { width: 48px; height: 48px; }
+.opt .otxt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.opt .oname { font-family: var(--font-display); font-weight: 600; font-size: 1.25rem; line-height: 1.15; }
+.opt .odesc { font-size: 0.85rem; color: var(--ink-soft); }
+.opt .radio { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--line); display: grid; place-items: center; }
+.opt[aria-checked="true"] { background: var(--surface-solid); border: 2px solid var(--ink); padding: 13px; }
+.opt[aria-checked="true"] .radio { background: var(--ink); border: 0; color: #fff; }
+.cta { border: 0; background: var(--ink); color: var(--surface-solid); border-radius: 999px; padding: 16px 20px; font-weight: 600; font-size: 1rem; box-shadow: 0 6px 18px rgba(18, 59, 79, 0.25); }
+.cancel { align-self: center; border: 0; background: transparent; color: var(--ink-soft); font-weight: 500; font-size: 0.875rem; padding: 2px 10px; }
+
+.foot { font-size: 0.8rem; color: var(--ink); margin: 0; background: var(--surface); border-radius: 14px; padding: 10px 14px; }
+
+/* barra de abajo */
+.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 9; background: var(--surface-solid); border-top: 1px solid var(--line); padding: 8px 20px calc(8px + env(safe-area-inset-bottom, 0px)); }
+.tabs-in { max-width: 480px; margin-inline: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.tabs button { border: 0; background: transparent; border-radius: 16px; padding: 8px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.78rem; font-weight: 600; color: var(--ink-soft); }
+.tabs button[aria-current="page"] { background: var(--sky-soft); color: var(--ink); }
+</style>
+
+<div class="sea" aria-hidden="true"></div>
+
+<main id="app" aria-live="polite">
+  <div class="brand"><h1><b>Ola, </b><i>dónde estás?</i></h1></div>
+  <p class="foot">Cargando el mar...</p>
+</main>
+
+<nav class="tabs" id="tabs" aria-label="Secciones"></nav>
+
+<script>
+/*LOGIC*/
+</script>
+<script>
+const SNAPSHOT = /*SNAPSHOT*/;
+const ZONE_NAMES = Object.keys(ZONE_POINTS);
+const MARINE_URL = 'https://marine-api.open-meteo.com/v1/marine?latitude=' + ZONE_NAMES.map(z => ZONE_POINTS[z].m[0]).join(',') + '&longitude=' + ZONE_NAMES.map(z => ZONE_POINTS[z].m[1]).join(',') + '&hourly=wave_height,wave_period,wave_direction,swell_wave_height,swell_wave_period,swell_wave_direction&timezone=America%2FMontevideo&forecast_days=2';
+const WIND_URL = 'https://api.open-meteo.com/v1/forecast?latitude=' + ZONE_NAMES.map(z => ZONE_POINTS[z].w[0]).join(',') + '&longitude=' + ZONE_NAMES.map(z => ZONE_POINTS[z].w[1]).join(',') + '&hourly=wind_speed_10m,wind_direction_10m,wind_gusts_10m&wind_speed_unit=kmh&timezone=America%2FMontevideo&forecast_days=2';
+const TZ = 'America/Montevideo';
+const app = document.getElementById('app');
+const state = { pick: null, data: null, live: false, dates: [], date: null, tab: 'donde', view: null, from: 'explorar' };
+let zoneFilter = 'all';
+/* Tu ola: qué tipo de ola querés buscar. null = todavía no eligió (primera vez) */
+const PREF_KEY = 'ola-tu-ola-v1';
+const PREF_ORDER = ['tablonera', 'divertida', 'intensa', 'radical'];
+const PREF_OPTS = [
+  { k: 'tablonera', desc: '0,4 a 0,7 m · Para deslizar y sonreír' },
+  { k: 'divertida', desc: '0,7 a 1 m · Ya se disfruta de verdad' },
+  { k: 'intensa', desc: '1 a 1,8 m · Ola con fuerza' },
+  { k: 'radical', desc: 'Más de 1,8 m · Grande y potente' },
+  { k: 'cualquiera', desc: 'La mejor que haya, de cualquier tamaño' }
+];
+let PREF = null;
+/* Ubicación: solo si la persona lo pide con el botón. LOC = { lat, lon } */
+let LOC = null;
+function distKm(b) { return LOC ? kmBetween(LOC, b) : null; }
+function distText(b) { const d = distKm(b); return d === null ? '' : (d < 1 ? 'menos de 1 km' : Math.round(d) + ' km'); }
+/* al abrir la app buscamos dónde estás (la primera vez el celular pide permiso). Si no hay permiso, la app sigue igual, sin distancias. */
+function startLocation() {
+  if (LOC || !navigator.geolocation) return;
+  const go = () => navigator.geolocation.getCurrentPosition(p => { LOC = { lat: p.coords.latitude, lon: p.coords.longitude }; render(); }, () => {}, { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 });
+  if (navigator.permissions && navigator.permissions.query) navigator.permissions.query({ name: 'geolocation' }).then(s => { if (s.state !== 'denied') go(); }).catch(go);
+  else go();
+}
+try { const p = localStorage.getItem(PREF_KEY); if (PREF_OPTS.some(o => o.k === p)) PREF = p; } catch (e) {}
+function prefLabel(k) { return k === 'cualquiera' ? 'La que sea' : SIZES[k].label; }
+function prefIcon(k) { return k === 'cualquiera' ? 'glass' : k; }
+let zoneMenu = false;
+
+const ICONS = {
+  lupa: '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>',
+  ventosa: '<path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 12h16a3 3 0 1 1-3 3"/><path d="M3 16h7"/>',
+  movidito: '<path d="M2 9l2.5-3 2.5 3 2.5-3 2.5 3 2.5-3 2.5 3 2.5-3"/><path d="M2 16l2.5-3 2.5 3 2.5-3 2.5 3 2.5-3 2.5 3 2.5-3"/>',
+  soplado: '<path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 12h16a3 3 0 1 1-3 3"/><path d="M3 16h7"/>',
+  prolijo: '<path d="M2 9c2.5-3 5-3 7.5 0s5 3 7.5 0 3-1.5 5-1.5"/><path d="M2 16c2.5-3 5-3 7.5 0s5 3 7.5 0 3-1.5 5-1.5"/>',
+  prolija: '<path d="M2 9c2.5-3 5-3 7.5 0s5 3 7.5 0 3-1.5 5-1.5"/><path d="M2 16c2.5-3 5-3 7.5 0s5 3 7.5 0 3-1.5 5-1.5"/>',
+  glass: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.7 1.8 1.8.7-1.8.7L19 21l-.7-1.8-1.8-.7 1.8-.7z"/>',
+  plana: '<circle cx="12" cy="8" r="3"/><path d="M3 15h18M6 19h12"/>',
+  tablonera: '<path d="M12 -1C15.6 -1 17.2 5 17.2 12S15.6 25 12 25 6.8 19 6.8 12 8.4 -1 12 -1z" transform="rotate(45 12 12)"/>',
+  divertida: '<circle cx="12" cy="12" r="9"/><path d="M8 14c1.2 2 6.8 2 8 0M9 9.5h.01M15 9.5h.01"/>',
+  intensa: '<path d="M13 2L5 14h6l-1 8 8-12h-6z"/>',
+  radical: '<path d="M12 3c1 3 4 4.5 4 8.5a4 4 0 0 1-8 0c0-1.5.5-2.5 1.5-3.5.2 1.2.8 1.8 1.5 2C11 8 11 5.5 12 3z"/>',
+  compass: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+  back: '<path d="M15 5l-7 7 7 7"/>',
+  chev: '<path d="M6 9l6 6 6-6"/>',
+  check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  chevr: '<path d="M9 6l6 6-6 6"/>',
+  pin: '<path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>'
+};
+function icon(n, s) {
+  return '<svg class="ic" width="' + (s || 20) + '" height="' + (s || 20) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[n] + '</svg>';
+}
+/* cuanto más grande la ola, más oscuro el azul */
+const LVL = { plana: ['#EAF1F0', '#476D7E'], tablonera: ['#D3EAF0', '#123B4F'], divertida: ['#A5D3E4', '#123B4F'], intensa: ['#4E9FC6', '#FFFFFF'], radical: ['#1F5F86', '#FFFFFF'] };
+function tile(k, s) { return '<span class="ico" style="background:' + LVL[k][0] + ';color:' + LVL[k][1] + '">' + icon(k, s || 26) + '</span>'; }
+
+function todayStr() { return new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date()); }
+function addDay(s, n) { const d = new Date(s + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); }
+function dayLabel(s) {
+  const t = todayStr();
+  if (s === t) return 'Hoy';
+  if (s === addDay(t, 1)) return 'Mañana';
+  return new Date(s + 'T12:00:00Z').toLocaleDateString('es-UY', { weekday: 'long', timeZone: 'UTC' });
+}
+function dayLabelLower(s) { const l = dayLabel(s); return l.charAt(0).toLowerCase() + l.slice(1); }
+
+async function getJson(url) {
+  const c = new AbortController(); const to = setTimeout(() => c.abort(), 6000);
+  try { const r = await fetch(url, { signal: c.signal }); if (!r.ok) throw new Error('http ' + r.status); return await r.json(); }
+  finally { clearTimeout(to); }
+}
+const CACHE_KEY = 'ola-datos-v1';
+async function load() {
+  try {
+    const [m, w] = await Promise.all([getJson(MARINE_URL), getJson(WIND_URL)]);
+    const zones = {};
+    ZONE_NAMES.forEach((z, i) => { zones[z] = { marine: m[i].hourly, wind: w[i].hourly }; });
+    const data = { fetchedAt: new Date().toISOString(), zones };
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch (e) {}
+    return { data, live: true };
+  } catch (e) {
+    // sin señal: usamos el último mar que bajó, si es de hace menos de 6 horas
+    try {
+      const c = JSON.parse(localStorage.getItem(CACHE_KEY));
+      if (c && c.zones && Date.now() - new Date(c.fetchedAt).getTime() < 6 * 3600 * 1000) return { data: c, live: false };
+    } catch (e2) {}
+    return { data: SNAPSHOT, live: false };
+  }
+}
+
+function nowHour() { return parseInt(new Intl.DateTimeFormat('en-GB', { timeZone: TZ, hour: '2-digit', hourCycle: 'h23' }).format(new Date()), 10); }
+/* hoy se muestra la hora actual (entre 6 y 20 h). Otros días: null, se usa la mejor ventana */
+function refHourFor(date) { return date === todayStr() ? Math.min(20, Math.max(6, nowHour())) : null; }
+function dv(beach, date) { return dayVerdict(beach, state.data, date, refHourFor(date)); }
+function verdicts(date) { return BEACHES.map(b => dv(b, date)).filter(Boolean); }
+function hourNote(v) { return v.isNow ? 'Ahora · ' + v.refHour + ' h' : 'A las ' + v.refHour + ' h'; }
+/* La mejor ola: gana la calidad del mar (Glass primero). Si empatan, la más grande. */
+function rank(v) {
+  if (v.sizeKey === 'plana') return -1;
+  const sizeBonus = { tablonera: 1, divertida: 2, intensa: 3, radical: 3 }[v.sizeKey];
+  return QUALS[v.qualKey].score * 10 + sizeBonus * 3 + Math.min(v.eff, 2);
+}
+function win(v) { return v.window[0] + ' a ' + v.window[1] + ' h'; }
+function qualPill(k) { return '<span class="pill ' + k + '">' + icon(k, 18) + '<span>' + QUALS[k].label + '</span></span>'; }
+function nameEn(b, withZone) { return b.name + (b.alias ? ' · ' + b.alias : '') + (withZone && b.zona ? ' <span class="en">en ' + b.zona + '</span>' : ''); }
+function placeOf(b) { return (b.alias ? b.alias + ' · ' : '') + (b.zona || ''); }
+function searchName(b) { return norm(b.name + ' ' + (b.alias || '')); }
+
+function notices() {
+  const first = state.dates[0];
+  if (first !== todayStr()) {
+    return '<p class="notice">Estos datos son del ' + new Date(first + 'T12:00:00Z').toLocaleDateString('es-UY', { day: 'numeric', month: 'long', timeZone: 'UTC' }) + '. Todavía no se actualizan solos.</p>';
+  }
+  return '';
+}
+function header(big, chip) {
+  const withChip = big && chip && PREF;
+  return '<div class="brand' + (big ? ' big' : '') + (withChip ? ' hasChip' : '') + '"><h1><b>Ola, </b><i>dónde estás?</i></h1>' +
+    (withChip ? '<button type="button" class="tuola" data-editpref="1" aria-label="Cambiar tu ola"><span class="soft">Tu ola</span>' + icon(prefIcon(PREF), 15) + prefLabel(PREF) + icon('chevr', 14) + '</button>' : '') + '</div>';
+}
+function dayToggle() {
+  return '<div class="days" role="group" aria-label="Día">' + state.dates.map(d =>
+    '<button type="button" data-date="' + d + '" aria-pressed="' + (d === state.date) + '">' + dayLabel(d) + '</button>').join('') + '</div>';
+}
+
+/* La ola hoy */
+function todayDate() { return state.dates.includes(todayStr()) ? todayStr() : state.dates[0]; }
+function coastLabel() {
+  const zs = ZONES.filter(z => BEACHES.some(b => b.zona === z));
+  return zs.length > 1 ? zs[0] + ' a ' + zs[zs.length - 1] : (zs[0] || 'José Ignacio');
+}
+function mejor(v) { return '<div class="mejor"><span>Mejor hora</span><b>' + win(v) + '</b></div>'; }
+function todayCard(v, date) {
+  return '<button type="button" class="card today" data-beach="' + v.beach.id + '">' +
+    '<span class="eyebrow hournote">' + hourNote(v) + '</span>' +
+    '<div class="card-head">' + tile(v.sizeKey, 26) + '<span class="tline"><h3 class="big">' + SIZES[v.sizeKey].label + '</h3>' + qualPill(v.qualKey) + '</span></div>' +
+    (v.glassIdeal ? '<span class="badge">' + icon('glass', 16) + 'Glass ideal</span>' : '') +
+    '<p class="advice">' + SIZES[v.sizeKey].text + ' ' + QUALS[v.qualKey].text + '</p>' +
+    mejor(v) +
+    '<span class="more">Ver detalles →</span></button>';
+}
+/* con "tu ola": primero las del tamaño que elegiste, después las más cercanas en tamaño */
+function prefRank(v) {
+  let r = rank(v);
+  if (LOC) r -= distKm(v.beach) * 0.15; /* 100 km de más pesan como bajar de Glass a Soplado */
+  if (PREF && PREF !== 'cualquiera') r -= Math.abs(PREF_ORDER.indexOf(v.sizeKey) - PREF_ORDER.indexOf(PREF)) * 1000;
+  return r;
+}
+function renderDonde() {
+  const date = todayDate();
+  const vs = verdicts(date).sort((a, b) => prefRank(b) - prefRank(a));
+  const waves = vs.filter(v => v.sizeKey !== 'plana');
+  const top = waves[0] || null;
+  const noMatch = !!(top && PREF && PREF !== 'cualquiera' && top.sizeKey !== PREF);
+  const bubble = top
+    ? '<h2 class="hoy"><span class="lead">' + dayLabel(date) + ' estoy en</span><span class="pname">' + top.beach.name + '.<svg viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true"><path d="M0 6 Q12.5 -2 25 6 T50 6 T75 6 T100 6 T125 6 T150 6 T175 6 T200 6" fill="none" stroke="#4E9FC6" stroke-width="3.5" stroke-linecap="round"/></svg></span></h2><p class="place">' + placeOf(top.beach) + '</p>'
+    : '<h2 class="long">Hoy no estoy, me fui de vacaciones.</h2><p class="place">' + coastLabel() + '</p>';
+  let first = '', rest = '';
+  if (top) {
+    first = (LOC ? '<p class="dist">' + icon('pin', 16) + 'Distancia · ' + distText(top.beach) + '</p>' : '') + todayCard(top, date);
+    const others = waves.slice(1, 3); /* el top 3: la principal y hasta dos más */
+    if (others.length) {
+      rest = '<section class="also"><p class="subhead">También hay ola en</p><div class="chips">' + others.map(v =>
+        '<button type="button" class="chip" data-beach="' + v.beach.id + '"><span class="chip-ico">' + icon(v.sizeKey, 20) + '</span>' + v.beach.name + '</button>').join('') + '</div></section>';
+    } else {
+      rest = '<section class="also"><p class="subhead">También hay ola en</p><p class="msg">Hoy la ola está en un solo lugar.</p></section>';
+    }
+  } else {
+    const nd = state.dates.find(d => d > date);
+    const nv = nd ? verdicts(nd).sort((a, b) => rank(b) - rank(a))[0] : null;
+    if (nv && nv.sizeKey !== 'plana') {
+      first = '<button type="button" class="card teaser" data-beach="' + nv.beach.id + '" data-date="' + nd + '"><p class="eyebrow">A ver mañana</p><p class="advice">Ojo que mañana vuelve: ' + SIZES[nv.sizeKey].label.toLowerCase() + ' en ' + nv.beach.name + '.</p><span class="more">Ver mañana →</span></button>';
+    } else {
+      first = '<div class="card teaser"><p class="eyebrow">Mientras tanto</p><p class="advice">Buen día para mate, arena y cara de tragedia. Mañana la miramos de nuevo.</p></div>';
+    }
+  }
+  const banner = noMatch ? '<div class="nomatch"><span class="nm-ico">' + icon(prefIcon(PREF), 22) + '</span><span>Hoy no hay ola <b>' + SIZES[PREF].label + '</b>. Esta es la más parecida.</span></div>' : '';
+  app.innerHTML = header(true, true) + notices() + banner + '<div class="panel">' +
+    '<section class="chat"><div class="a">' + bubble + '</div></section>' + first + '</div>' + rest;
+}
+
+/* Ver otras playas */
+function norm(t) { return t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+function finder(zones) {
+  const label = zoneFilter === 'all' ? 'Todas las zonas' : zoneFilter;
+  const btn = zones.length > 1
+    ? '<button type="button" class="zonebtn" data-zonemenu="1" aria-haspopup="listbox" aria-expanded="' + zoneMenu + '">' + label + icon('chev', 16) + '</button>'
+    : '';
+  const menu = zoneMenu && zones.length > 1
+    ? '<div class="zonemenu" role="listbox" aria-label="Zona">' + ['all'].concat(zones).map(z =>
+        '<button type="button" role="option" data-zone="' + z + '" aria-checked="' + (zoneFilter === z) + '">' + (z === 'all' ? 'Todas las zonas' : z) + (zoneFilter === z ? icon('check', 18) : '') + '</button>').join('') + '</div>'
+    : '';
+  return '<div class="finder"><div class="finder-in">' + btn +
+    '<label class="search"><span class="sr">Buscar playa</span>' + icon('lupa', 18) + '<input id="q" type="search" placeholder="Buscar playa" autocomplete="off"></label></div>' + menu + '</div>';
+}
+function renderExplorar() {
+  const vs = BEACHES.filter(b => zoneFilter === 'all' || b.zona === zoneFilter).map(b => verdicts(state.date).find(v => v.beach.id === b.id)).filter(Boolean).sort((x, y) => rank(y) - rank(x));
+  const zones = ZONES.filter(z => BEACHES.some(b => b.zona === z));
+  const on = vs.filter(v => v.sizeKey !== 'plana');
+  const off = vs.filter(v => v.sizeKey === 'plana');
+  const rows = on.map(v =>
+    '<li data-name="' + searchName(v.beach) + '"><button type="button" class="row" data-beach="' + v.beach.id + '">' + tile(v.sizeKey, 26) +
+      '<span class="txt"><span class="name">' + nameEn(v.beach, zoneFilter === 'all') + '</span>' +
+      '<span class="sizeline"><span class="size">' + SIZES[v.sizeKey].label + '</span>' + qualPill(v.qualKey) + '</span>' +
+      mejor(v) + '</span></button></li>').join('');
+  const offBlock = off.length
+    ? '<div class="offbox"><p class="subhead">La ola se fue de vacaciones (' + off.length + ')</p><div class="chips">' + off.map(v =>
+        '<button type="button" class="chip" data-name="' + searchName(v.beach) + '" data-beach="' + v.beach.id + '"><span class="chip-ico">' + icon('plana', 18) + '</span>' + v.beach.name + '</button>').join('') + '</div></div>'
+    : '';
+  app.innerHTML = header() + notices() + finder(zones) +
+    '<div><div class="listhead"><p class="subhead">Con ola (' + on.length + ')</p>' + dayToggle() + '</div>' +
+    (on.length ? '<ul class="list">' + rows + '</ul>' : '<p class="notice">Ninguna playa tiene ola este día.</p>') + '</div>' +
+    offBlock;
+}
+
+/* Detalle de una playa: Hoy y Mañana juntos */
+function hoursInline(v, legend) {
+  const off = v.sizeKey === 'plana';
+  const maxEff = Math.max(2.4, ...v.hours.map(h => h.eff));
+  const pk = v.hours.reduce((a, h, i) => h.eff > v.hours[a].eff ? i : a, 0);
+  const bars = v.hours.map((h, i) => {
+    const ht = Math.max(6, Math.min(100, (h.eff / maxEff) * 100));
+    const isNow = v.isNow && h.h === v.refHour;
+    const near = v.isNow && Math.abs(h.h - v.refHour) <= 1;
+    let lab = '';
+    if (isNow) lab = '<span class="blabel">Ahora · ' + h.eff.toFixed(1) + ' m</span>';
+    else if (i === pk && !near) lab = '<span class="blabel">' + h.eff.toFixed(1) + ' m</span>';
+    return '<div class="bar ' + h.qual + (isNow ? ' now' : '') + '" style="height:' + ht + '%">' + lab + '</div>';
+  }).join('');
+  const ticks = v.hours.map(h => '<span>' + (h.h % 3 === 0 ? h.h : '') + '</span>').join('');
+  return '<div class="chart"><div><h4>Altura de la ola por horas</h4><p class="sub">El color es cómo está el viento</p></div>' +
+    '<div><div class="bars">' + bars + '</div><div class="ticks">' + ticks + '</div></div>' +
+    (legend ? '<div class="qchips">' +
+      '<span><i style="background:var(--glass)"></i>Glass</span>' +
+      '<span><i style="background:var(--calm)"></i>Prolijo</span>' +
+      '<span><i style="background:var(--mov)"></i>Movidito</span>' +
+      '<span><i style="background:var(--blow)"></i>Soplado</span></div>' : '') + '</div>';
+}
+function daySection(v, date, withChart) {
+  const off = v.sizeKey === 'plana';
+  const advice = off
+    ? SIZES.plana.text + (v.wSpeed > 25 ? ' Y encima hay viento fuerte.' : '')
+    : SIZES[v.sizeKey].text + ' ' + QUALS[v.qualKey].text;
+  return '<section class="daysec"><div class="card-head">' + tile(v.sizeKey, 28) +
+    '<div class="ch-txt"><p class="eyebrow">' + dayLabel(date) + ' · ' + (v.isNow ? 'ahora, ' : '') + v.refHour + ' h</p><div class="sizeline"><span class="size2">' + SIZES[v.sizeKey].label + '</span>' + (off ? '' : qualPill(v.qualKey)) + '</div></div></div>' +
+    (v.glassIdeal ? '<span class="badge">' + icon('glass', 16) + 'Glass ideal</span>' : '') +
+    '<p class="advice">' + advice + '</p>' +
+    (off ? '' : mejor(v)) +
+    '<div class="stats">' +
+      '<div class="stat"><b>' + v.eff.toFixed(1) + ' m</b><span>Altura</span></div>' +
+      '<div class="stat"><b>' + Math.round(v.period) + ' seg</b><span>Entre olas</span></div>' +
+      '<div class="stat"><b>' + Math.round(v.wSpeed) + ' km/h</b><span>Viento ' + v.windRel + '</span></div>' +
+    '</div>' +
+    (withChart ? hoursInline(v, true) : '') + '</section>';
+}
+function renderBeach(id) {
+  const beach = BEACHES.find(b => b.id === id);
+  if (!beach) { go('explorar'); return; }
+  const days = state.dates.slice(0, 2);
+  const vs = days.map(d => ({ d, v: dv(beach, d) })).filter(x => x.v);
+  app.innerHTML = header() + notices() +
+    '<h1 class="beachname">' + nameEn(beach, true) + '</h1>' +
+    '<article class="card days">' + vs.map((x, i) => daySection(x.v, x.d, i === 0)).join('') + '</article>' +
+    '<button type="button" class="backbtn" data-back="1" aria-label="Volver">' + icon('back', 20) + 'Volver</button>';
+}
+
+/* Elegí tu ola: la primera vez (sin volver) y después desde el chip (con Guardar y Cancelar) */
+function renderElegir() {
+  const first = !PREF;
+  const sel = state.pick || PREF;
+  const opts = PREF_OPTS.map(o => {
+    const lv = o.k === 'cualquiera' ? '<span class="ico" style="background:#E1F4F2;color:#2DB8AE">' + icon('glass', 26) + '</span>' : tile(o.k, 26);
+    return '<button type="button" class="opt" role="radio" data-pick="' + o.k + '" aria-checked="' + (sel === o.k) + '">' + lv +
+      '<span class="otxt"><span class="oname">' + prefLabel(o.k) + '</span><span class="odesc">' + o.desc + '</span></span>' +
+      '<span class="radio">' + (sel === o.k ? icon('check', 16) : '') + '</span></button>';
+  }).join('');
+  app.innerHTML = header(first) +
+    '<section class="pick"><div class="pick-head"><h2>Elegí tu ola</h2><p>' +
+      (first ? 'Después la podés cambiar cuando quieras.' : 'Te vamos a mostrar primero las playas de este tamaño.') + '</p></div>' +
+      '<div class="opts" role="radiogroup" aria-label="Tu ola">' + opts + '</div></section>' +
+    (first ? '' : '<button type="button" class="cancel" data-cancelpref="1">Cancelar</button>');
+}
+
+function renderTabs() {
+  if (state.tab === 'elegir' && !PREF) { document.getElementById('tabs').innerHTML = ''; return; }
+  const t = (id, ic, lab) => '<button type="button" data-tab="' + id + '"' + ((state.tab === id || (state.tab === 'elegir' && id === 'donde')) ? ' aria-current="page"' : '') + '>' + icon(ic, 24) + lab + '</button>';
+  document.getElementById('tabs').innerHTML = '<div class="tabs-in">' + t('donde', 'prolija', 'La ola hoy') + t('explorar', 'compass', 'Ver otras playas') + '</div>';
+}
+function render() {
+  if (state.tab === 'elegir') renderElegir();
+  else if (state.tab === 'donde') renderDonde();
+  else if (state.view) renderBeach(state.view);
+  else renderExplorar();
+  renderTabs();
+}
+function go(tab, view) {
+  state.tab = tab; state.view = view || null; zoneMenu = false;
+  const hash = tab === 'explorar' ? (view || 'explorar') : '';
+  try { history.replaceState(null, '', hash ? '#' + hash : '#'); } catch (e) {}
+  render(); window.scrollTo(0, 0);
+}
+app.addEventListener('input', e => {
+  if (e.target.id !== 'q') return;
+  const q = norm(e.target.value.trim());
+  app.querySelectorAll('[data-name]').forEach(el => { el.hidden = q && !el.dataset.name.includes(q); });
+});
+app.addEventListener('click', e => {
+  const t = e.target.closest('button');
+  if (zoneMenu && !(t && (t.dataset.zonemenu || t.dataset.zone))) { zoneMenu = false; render(); if (!t) return; }
+  if (!t) return;
+  if (t.dataset.editpref) { state.pick = null; go('elegir'); }
+  else if (t.dataset.pick) {
+    /* tocás una ola y sigue solo */
+    state.pick = t.dataset.pick; render();
+    setTimeout(() => {
+      const firstTime = !PREF;
+      PREF = state.pick; state.pick = null;
+      try { localStorage.setItem(PREF_KEY, PREF); } catch (e) {}
+      go('donde');
+      if (firstTime) startLocation();
+    }, 220);
+  }
+  else if (t.dataset.cancelpref) { state.pick = null; go('donde'); }
+  else if (t.dataset.zonemenu) { zoneMenu = !zoneMenu; render(); }
+  else if (t.dataset.zone) { zoneFilter = t.dataset.zone; zoneMenu = false; render(); }
+  else if (t.dataset.beach) { state.from = state.tab; state.date = t.dataset.date || (state.tab === 'donde' ? todayDate() : state.date); go('explorar', t.dataset.beach); }
+  else if (t.dataset.date) { state.date = t.dataset.date; render(); }
+  else if (t.dataset.back) go(state.from || 'explorar');
+});
+document.getElementById('tabs').addEventListener('click', e => {
+  const t = e.target.closest('button'); if (t && t.dataset.tab) go(t.dataset.tab);
+});
+
+(async function start() {
+  const res = await load();
+  state.data = res.data; state.live = res.live;
+  state.dates = [...new Set(state.data.zones[ZONE_NAMES[0]].marine.time.map(t => t.slice(0, 10)))];
+  state.date = state.dates.includes(todayStr()) ? todayStr() : state.dates[0];
+  let h = ''; try { h = location.hash.replace('#', ''); } catch (e) {}
+  if (BEACHES.some(b => b.id === h)) { state.tab = 'explorar'; state.view = h; }
+  else if (h === 'explorar') { state.tab = 'explorar'; state.view = null; }
+  if (!PREF) { state.tab = 'elegir'; state.view = null; }
+  render();
+  if (PREF) startLocation();
+})();
+</script>
