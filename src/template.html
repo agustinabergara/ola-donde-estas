@@ -101,7 +101,7 @@ main { position: relative; z-index: 1; max-width: 480px; margin-inline: auto; di
 .card.today .tline { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; min-width: 0; }
 .card .more { font-size: 0.85rem; font-weight: 600; color: var(--ink-soft); }
 .card.today .more { align-self: flex-end; }
-.card.today .hournote { margin-bottom: -6px; }
+.card.today .hournote { margin-bottom: 8px; }
 .also { background: var(--panel); border: 1px solid var(--line); border-radius: 30px; padding: 18px 20px; box-shadow: 0 10px 30px rgba(18, 59, 79, 0.12); display: flex; flex-direction: column; gap: 12px; }
 .also p.msg { margin: 0; }
 
@@ -164,13 +164,33 @@ main { position: relative; z-index: 1; max-width: 480px; margin-inline: auto; di
 
 /* tu ola: chip del encabezado */
 .brand.big.hasChip { padding-bottom: 22px; }
-.brand.big .tuola { margin-top: 12px; display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.55); border: 1px solid rgba(255, 255, 255, 0.85); border-radius: 999px; padding: 5px 8px 5px 9px; font-weight: 600; font-size: 0.8rem; color: var(--ink); }
-.brand.big .tuola .soft { font-weight: 400; color: var(--ink-soft); }
-.brand.big .tuola .ic:last-child { opacity: 0.7; }
+.brand .tuola { margin-top: 12px; display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.55); border: 1px solid rgba(255, 255, 255, 0.85); border-radius: 999px; padding: 5px 8px 5px 9px; font-weight: 600; font-size: 0.8rem; color: var(--ink); }
+.brand .tuola .soft { font-weight: 400; color: var(--ink-soft); }
+.brand .tuola .ic:last-child { opacity: 0.7; }
 
 /* ubicación y aviso */
 .a { align-items: flex-end; text-align: right; }
 .a .place { align-self: flex-end; margin: 0; background: none; border: 0; padding: 2px 4px; font-weight: 500; font-size: 0.9rem; color: var(--ink-soft); }
+/* home compacta: todo entra en una pantalla */
+.brand.home { padding: 34px 20px 2px; margin-bottom: -6px; }
+.brand.home h1 b { font-size: 2.6rem; }
+.brand.home h1 i { font-size: 2rem; }
+.brand.home .tuola { margin-top: 22px; }
+.brand.home.hasChip { padding-bottom: 14px; }
+.compact .a { padding: 22px 22px 18px; gap: 6px; }
+.compact .a h2.hoy { gap: 2px; }
+.compact .a h2.hoy .lead { font-size: 1.3rem; }
+.compact .a h2.hoy .pname { font-size: 2.2rem; }
+.compact .a h2.hoy .pname svg { bottom: -9px; }
+.compact .a::before { bottom: 34px; }
+.compact .a .place { margin-top: 8px; font-size: 0.85rem; }
+.compact .card { padding: 12px 8px 8px; margin-top: 4px; }
+.compact .card.today { gap: 8px; }
+.compact .card.today .big { font-size: 1.7rem; }
+.panel.compact + .also { margin-top: -12px; }
+.panel.compact .card { border-top: 0; margin-top: 0; }
+.panel.compact .also { background: none; border: 0; border-top: 1px solid rgba(18, 59, 79, 0.14); border-radius: 0; box-shadow: none; padding: 18px 8px 6px; margin-top: 8px; gap: 12px; }
+.chat.compact { margin-bottom: -8px; }
 .dist { margin: 6px 10px 0; display: flex; align-items: center; gap: 6px; font-size: 0.9rem; font-weight: 500; color: var(--ink-soft); }
 .nomatch { display: flex; align-items: center; gap: 12px; background: #1F5F86; color: #fff; border-radius: 20px; padding: 14px 16px; box-shadow: 0 8px 22px rgba(31, 95, 134, 0.32); font-size: 0.94rem; line-height: 1.3; }
 .nomatch b { font-weight: 600; }
@@ -196,10 +216,10 @@ main { position: relative; z-index: 1; max-width: 480px; margin-inline: auto; di
 .foot { font-size: 0.8rem; color: var(--ink); margin: 0; background: var(--surface); border-radius: 14px; padding: 10px 14px; }
 
 /* barra de abajo */
-.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 9; background: var(--surface-solid); border-top: 1px solid var(--line); padding: 8px 20px calc(8px + env(safe-area-inset-bottom, 0px)); }
+.tabs { position: fixed; left: 14px; right: 14px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 9; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.85); background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(24px) saturate(1.4); -webkit-backdrop-filter: blur(24px) saturate(1.4); box-shadow: 0 16px 40px rgba(30, 100, 140, 0.2); padding: 6px 8px; }
 .tabs-in { max-width: 480px; margin-inline: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.tabs button { border: 0; background: transparent; border-radius: 16px; padding: 8px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.78rem; font-weight: 600; color: var(--ink-soft); }
-.tabs button[aria-current="page"] { background: var(--sky-soft); color: var(--ink); }
+.tabs button { border: 0; background: transparent; border-radius: 24px; padding: 8px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.78rem; font-weight: 600; color: var(--ink-soft); }
+.tabs button[aria-current="page"] { background: rgba(120, 190, 215, 0.35); color: var(--ink); }
 </style>
 
 <div class="sea" aria-hidden="true"></div>
@@ -338,8 +358,8 @@ function notices() {
 }
 function header(big, chip) {
   const withChip = big && chip && PREF;
-  return '<div class="brand' + (big ? ' big' : '') + (withChip ? ' hasChip' : '') + '"><h1><b>Ola, </b><i>dónde estás?</i></h1>' +
-    (withChip ? '<button type="button" class="tuola" data-editpref="1" aria-label="Cambiar tu ola"><span class="soft">Tu ola</span>' + icon(prefIcon(PREF), 15) + prefLabel(PREF) + icon('chevr', 14) + '</button>' : '') + '</div>';
+  return '<div class="brand' + (big === 'home' ? ' home' : big ? ' big' : '') + (withChip ? ' hasChip' : '') + '"><h1><b>Ola, </b><i>dónde estás?</i></h1>' +
+    (withChip ? '<button type="button" class="tuola" data-editpref="1" aria-label="Cambiar tu ola"><span class="soft">Elegí tu ola</span>' + icon(prefIcon(PREF), 15) + prefLabel(PREF) + icon('chevr', 14) + '</button>' : '') + '</div>';
 }
 function dayToggle() {
   return '<div class="days" role="group" aria-label="Día">' + state.dates.map(d =>
@@ -355,7 +375,7 @@ function coastLabel() {
 function mejor(v) { return '<div class="mejor"><span>Mejor hora</span><b>' + win(v) + '</b></div>'; }
 function todayCard(v, date) {
   return '<button type="button" class="card today" data-beach="' + v.beach.id + '">' +
-    '<span class="eyebrow hournote">' + hourNote(v) + '</span>' +
+    '<span class="eyebrow hournote">Datos de las ' + v.refHour + ' h</span>' +
     '<div class="card-head">' + tile(v.sizeKey, 26) + '<span class="tline"><h3 class="big">' + SIZES[v.sizeKey].label + '</h3>' + qualPill(v.qualKey) + '</span></div>' +
     (v.glassIdeal ? '<span class="badge">' + icon('glass', 16) + 'Glass ideal</span>' : '') +
     '<p class="advice">' + SIZES[v.sizeKey].text + ' ' + QUALS[v.qualKey].text + '</p>' +
@@ -376,15 +396,17 @@ function renderDonde() {
   const top = waves[0] || null;
   const noMatch = !!(top && PREF && PREF !== 'cualquiera' && top.sizeKey !== PREF);
   const bubble = top
-    ? '<h2 class="hoy"><span class="lead">' + dayLabel(date) + ' estoy en</span><span class="pname">' + top.beach.name + '.<svg viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true"><path d="M0 6 Q12.5 -2 25 6 T50 6 T75 6 T100 6 T125 6 T150 6 T175 6 T200 6" fill="none" stroke="#4E9FC6" stroke-width="3.5" stroke-linecap="round"/></svg></span></h2><p class="place">' + placeOf(top.beach) + '</p>'
+    ? '<h2 class="hoy"><span class="lead">Hoy estoy en</span><span class="pname">' + top.beach.name + '.<svg viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true"><path d="M0 6 Q12.5 -2 25 6 T50 6 T75 6 T100 6 T125 6 T150 6 T175 6 T200 6" fill="none" stroke="#4E9FC6" stroke-width="3.5" stroke-linecap="round"/></svg></span></h2><p class="place">' + placeOf(top.beach) + (LOC ? ' · ' + distText(top.beach) : '') + '</p>'
     : '<h2 class="long">Hoy no estoy, me fui de vacaciones.</h2><p class="place">' + coastLabel() + '</p>';
   let first = '', rest = '';
   if (top) {
-    first = (LOC ? '<p class="dist">' + icon('pin', 16) + 'Distancia · ' + distText(top.beach) + '</p>' : '') + todayCard(top, date);
+    first = todayCard(top, date);
     const others = waves.slice(1, 3); /* el top 3: la principal y hasta dos más */
     if (others.length) {
-      rest = '<section class="also"><p class="subhead">También hay ola en</p><div class="chips">' + others.map(v =>
-        '<button type="button" class="chip" data-beach="' + v.beach.id + '"><span class="chip-ico">' + icon(v.sizeKey, 20) + '</span>' + v.beach.name + '</button>').join('') + '</div></section>';
+      const groups = [];
+      others.forEach(v => { let g = groups.find(x => x.k === v.sizeKey); if (!g) { g = { k: v.sizeKey, list: [] }; groups.push(g); } g.list.push(v); });
+      rest = '<section class="also">' + groups.map(g => '<p class="subhead">También hay ola ' + SIZES[g.k].label.toLowerCase() + ' en</p><div class="chips">' + g.list.map(v =>
+        '<button type="button" class="chip" data-beach="' + v.beach.id + '"><span class="chip-ico">' + icon(v.sizeKey, 20) + '</span>' + v.beach.name + '</button>').join('') + '</div>').join('') + '</section>';
     } else {
       rest = '<section class="also"><p class="subhead">También hay ola en</p><p class="msg">Hoy la ola está en un solo lugar.</p></section>';
     }
@@ -398,8 +420,8 @@ function renderDonde() {
     }
   }
   const banner = noMatch ? '<div class="nomatch"><span class="nm-ico">' + icon(prefIcon(PREF), 22) + '</span><span>Hoy no hay ola <b>' + SIZES[PREF].label + '</b>. Esta es la más parecida.</span></div>' : '';
-  app.innerHTML = header(true, true) + notices() + banner + '<div class="panel">' +
-    '<section class="chat"><div class="a">' + bubble + '</div></section>' + first + '</div>' + rest;
+  app.innerHTML = header('home', true) + notices() + banner + '<section class="chat compact"><div class="a">' + bubble + '</div></section>' +
+    '<div class="panel compact">' + first + rest + '</div>';
 }
 
 /* Ver otras playas */
